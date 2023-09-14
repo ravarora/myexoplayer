@@ -63,6 +63,20 @@ dependencies {
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.ui)
     implementation(libs.media3.exoplayer.dash)
+    implementation(libs.androidx.fragment)
+    implementation(libs.brightcove.android) {
+        exclude(group = "com.android.support", "multidex")
+        exclude(group = "com.android.support", "support-annotations")
+    }
+    implementation(libs.brightcove.exoplayer) {
+        exclude(group = "com.android.support", "multidex")
+        exclude(group = "com.android.support", "support-annotations")
+    }
+    implementation(libs.brightcove.appcompat.plugin) {
+        exclude(group = "com.android.support", "multidex")
+        exclude(group = "com.android.support", "support-annotations")
+    }
+    implementation(libs.support.v4)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
