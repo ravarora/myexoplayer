@@ -1,11 +1,15 @@
 package com.example.myexoplayer
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +30,9 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentManager
@@ -36,6 +43,10 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import com.brightcove.player.model.DeliveryType
+import com.brightcove.player.model.Video
+import com.brightcove.player.view.BrightcoveExoPlayerVideoView
+import com.brightcove.player.view.BrightcovePlayer
 import com.example.myexoplayer.ui.theme.MyExoPlayerTheme
 
 class MainActivity : FragmentActivity() {
@@ -55,11 +66,14 @@ class MainActivity : FragmentActivity() {
                                          )*/
 
                         FragmentContainer(
-                            //modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier.fillMaxWidth(),
                             fragmentManager = supportFragmentManager,
                             commit = { add(it, PlayerFragment()) })
 
+                        //BrightCoveView(modifier = Modifier.fillMaxSize())
+
                         LazyColumnDemo()
+
                     }
                 }
             }
@@ -81,6 +95,21 @@ fun LazyColumnDemo() {
         }
     }
 }
+
+
+//TODO Trying a way to inflate brightcove player directly from activity
+/*@Composable
+fun BrightCoveView(modifier: Modifier = Modifier) {
+    AndroidView(modifier = modifier, factory = {
+        BrightcoveExoPlayerVideoView(it).apply {
+            val video: Video =
+                Video.createVideo("https://media.w3.org/2010/05/sintel/trailer.mp4", DeliveryType.MP4)
+            this.add(video)
+            this.analytics.account = "1760897681001"
+            this.start()
+        }
+    })
+}*/
 
 @Composable
 fun ExoPlayerView(modifier: Modifier = Modifier, mediaUrl: String) {
