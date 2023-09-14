@@ -8,6 +8,7 @@ espresso-core = "3.5.1"
 lifecycle-runtime-ktx = "2.6.1"
 activity-compose = "1.7.2"
 compose-bom = "2023.03.00"
+media3Version = "1.1.1"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -24,6 +25,9 @@ ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 material3 = { group = "androidx.compose.material3", name = "material3" }
+media3-exoplayer = { group  = "androidx.media3", name ="media3-exoplayer", version.ref = "media3Version"}
+media3-ui = { group  = "androidx.media3", name ="media3-ui", version.ref = "media3Version"}
+media3-exoplayer-dash = { group  = "androidx.media3", name ="media3-exoplayer-dash", version.ref = "media3Version"}
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }
