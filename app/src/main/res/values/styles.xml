@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="BrightcoveControlBar" parent="BrightcoveControlBarDefault">
+        <item name="brightcove_picture_in_picture">true</item>
+    </style>
+</resources>

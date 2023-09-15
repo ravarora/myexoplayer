@@ -1,6 +1,8 @@
 package com.example.myexoplayer
 
+import android.app.PictureInPictureUiState
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -45,13 +47,18 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.brightcove.player.model.DeliveryType
 import com.brightcove.player.model.Video
+import com.brightcove.player.pictureinpicture.PictureInPictureManager
 import com.brightcove.player.view.BrightcoveExoPlayerVideoView
 import com.brightcove.player.view.BrightcovePlayer
 import com.example.myexoplayer.ui.theme.MyExoPlayerTheme
 
 class MainActivity : FragmentActivity() {
+
+    lateinit var pipManager: PictureInPictureManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             MyExoPlayerTheme {
                 // A surface container using the 'background' color from the theme
@@ -78,6 +85,19 @@ class MainActivity : FragmentActivity() {
                 }
             }
         }
+    }
+
+    override fun onPictureInPictureModeChanged(
+        isInPictureInPictureMode: Boolean,
+        newConfig: Configuration
+    ) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        pipManager.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+    }
+
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        pipManager.onUserLeaveHint()
     }
 }
 
