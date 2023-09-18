@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.ViewModelProvider
 import com.brightcove.player.appcompat.BrightcovePlayerFragment
 import com.brightcove.player.event.Event
 import com.brightcove.player.event.EventType
@@ -19,6 +20,8 @@ import com.brightcove.player.pictureinpicture.PictureInPictureManager
 import com.brightcove.player.view.BaseVideoView
 
 class PlayerFragment : BrightcovePlayerFragment() {
+
+    private lateinit var viewModel: HomePlayerViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,7 +53,19 @@ class PlayerFragment : BrightcovePlayerFragment() {
         )
         (activity as MainActivity).pipManager.setOnUserLeaveEnabled(true)
 
+        baseVideoView.visibilityChanged { view ->
+            when (view.isShown) {
+                true -> viewModel.dispatch(HomePlayerEvent.HeaderPlayerVisible)
+                false -> viewModel.dispatch(HomePlayerEvent.HeaderPlayerGone)
+            }
+        }
+
         return result
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity())[HomePlayerViewModel::class.java]
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -98,5 +113,17 @@ class PlayerFragment : BrightcovePlayerFragment() {
         activity.window.navigationBarColor = android.graphics.Color.BLACK
         activity.requestedOrientation =
             if (onFullScreen) ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    }
+
+    private fun View.visibilityChanged(action: (View) -> Unit) {
+        this.viewTreeObserver.addOnGlobalLayoutListener {
+            val newVis: Boolean = this.isShown
+            if (this.tag as Boolean? != newVis) {
+                this.tag = this.isShown
+
+                // visibility has changed
+                action(this)
+            }
+        }
     }
 }

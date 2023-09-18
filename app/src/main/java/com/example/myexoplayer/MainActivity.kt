@@ -93,7 +93,7 @@ class MainActivity : FragmentActivity() {
                             .height(150.dp)
                             .align(Alignment.BottomEnd),
                             fragmentManager = supportFragmentManager,
-                            commit = { add(it, PlayerFragment()) })
+                            commit = { add(it, MiniPlayerFragment()) })
                     }
                 }
             }
