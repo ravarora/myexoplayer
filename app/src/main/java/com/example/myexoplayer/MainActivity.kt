@@ -3,9 +3,14 @@ package com.example.myexoplayer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -14,10 +19,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.constraintlayout.compose.ExperimentalMotionApi
+import androidx.constraintlayout.compose.MotionLayout
+import androidx.constraintlayout.compose.MotionScene
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.media3.common.MediaItem
@@ -31,19 +43,20 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyExoPlayerTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    ExoPlayerView(modifier = Modifier.fillMaxSize(), mediaUrl = stringResource(id = R.string.media_url_mp3))
-                }
+                HomeScreen(modifier = Modifier.fillMaxSize())
+                /*ExoPlayerView(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp),
+                    mediaUrl = stringResource(id = R.string.media_url_mp3)
+                )*/
             }
         }
     }
 }
 
 @Composable
-fun ExoPlayerView(modifier: Modifier = Modifier, mediaUrl : String) {
+fun ExoPlayerView(modifier: Modifier = Modifier, mediaUrl: String) {
     val context = LocalContext.current
     var mediaItemIndex by remember {
         mutableStateOf(0)
@@ -80,7 +93,7 @@ fun ExoPlayerView(modifier: Modifier = Modifier, mediaUrl : String) {
         })
     ) {
         val observer = LifecycleEventObserver { _, event ->
-            when(event) {
+            when (event) {
                 //Lifecycle.Event.ON_RESUME -> exoplayer.play()
                 Lifecycle.Event.ON_PAUSE -> exoplayer.stop()
                 else -> {}
@@ -99,5 +112,57 @@ fun ExoPlayerView(modifier: Modifier = Modifier, mediaUrl : String) {
             exoplayer.release()
             lifecycle.removeObserver(observer)
         }
+    }
+}
+
+@OptIn(ExperimentalMotionApi::class)
+@Composable
+fun HomeScreen(modifier: Modifier) {
+    val context = LocalContext.current
+    val motionScene = remember {
+        context.resources.openRawResource(R.raw.motion_scene).readBytes().decodeToString()
+    }
+    val scrollState = rememberScrollState()
+    MotionLayout(modifier = Modifier.fillMaxSize(), motionScene = MotionScene(content = motionScene)) {
+        // scrollview
+        Column(modifier = Modifier
+            .verticalScroll(scrollState)
+            .layoutId("scrollView")) {
+            ExoPlayerView(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(250.dp),
+                mediaUrl = stringResource(id = R.string.media_url_mp3)
+            )
+            Text(text = "This is a text", fontSize = 30.sp)
+            Text(text = "This is a text", fontSize = 30.sp)
+            Text(text = "This is a text", fontSize = 30.sp)
+            Text(text = "This is a text", fontSize = 30.sp)
+            Text(text = "This is a text", fontSize = 30.sp)
+            Text(text = "This is a text", fontSize = 30.sp)
+            Text(text = "This is a text", fontSize = 30.sp)
+            Text(text = "This is a text", fontSize = 30.sp)
+            Text(text = "This is a text", fontSize = 30.sp)
+            Text(text = "This is a text", fontSize = 30.sp)
+            Text(text = "This is a text", fontSize = 30.sp)
+            Text(text = "This is a text", fontSize = 30.sp)
+            Text(text = "This is a text", fontSize = 30.sp)
+            Text(text = "This is a text", fontSize = 30.sp)
+            Text(text = "This is a text", fontSize = 30.sp)
+            Text(text = "This is a text", fontSize = 30.sp)
+            Text(text = "This is a text", fontSize = 30.sp)
+            Text(text = "This is a text", fontSize = 30.sp)
+            Text(text = "This is a text", fontSize = 30.sp)
+            Text(text = "This is a text", fontSize = 30.sp)
+            Text(text = "This is a text", fontSize = 30.sp)
+            Text(text = "This is a text", fontSize = 30.sp)
+        }
+
+        Text(
+            text = "this is a dynamic text with scroll",
+            modifier = Modifier
+                .background(Color.Green)
+                .layoutId("dynamicTextView")
+        )
     }
 }

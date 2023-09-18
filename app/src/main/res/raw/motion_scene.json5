@@ -1,0 +1,45 @@
+{
+  ConstraintSets : {
+    start: {
+      scrollView: {
+        width: 'spread',
+        height: 'spread',
+        top: ['parent', 'top'],
+        bottom: ['parent', 'bottom'],
+        start: ['parent', 'start'],
+        end: ['parent', 'end'],
+      },
+      dynamicTextView: {
+        visibility: 'gone',
+      }
+    },
+    end: {
+      scrollView: {
+        width: 'spread',
+        height: 'spread',
+        top: ['parent', 'top'],
+        bottom: ['parent', 'bottom'],
+        start: ['parent', 'start'],
+        end: ['parent', 'end'],
+      },
+      dynamicTextView: {
+        visibility: 'visible',
+        start: ['parent', 'start', 16],
+        end: ['parent', 'end', 16],
+        bottom: ['parent', 'bottom', 16],
+      }
+    }
+  },
+  Transitions: {
+    default : {
+      from: 'start',
+      to: 'end',
+      duration: 250,
+      onSwipe: {
+        anchor: 'scrollView',
+        side: 'bottom',
+        mode: 'velocity'
+      }
+    }
+  }
+}
