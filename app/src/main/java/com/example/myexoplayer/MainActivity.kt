@@ -1,19 +1,22 @@
 package com.example.myexoplayer
 
-import android.app.PictureInPictureUiState
-import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,16 +28,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
+import androidx.constraintlayout.compose.ExperimentalMotionApi
+import androidx.constraintlayout.compose.MotionLayout
+import androidx.constraintlayout.compose.MotionScene
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentManager
@@ -45,17 +50,14 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
-import com.brightcove.player.model.DeliveryType
-import com.brightcove.player.model.Video
 import com.brightcove.player.pictureinpicture.PictureInPictureManager
-import com.brightcove.player.view.BrightcoveExoPlayerVideoView
-import com.brightcove.player.view.BrightcovePlayer
 import com.example.myexoplayer.ui.theme.MyExoPlayerTheme
 
 class MainActivity : FragmentActivity() {
 
     lateinit var pipManager: PictureInPictureManager
 
+    @OptIn(ExperimentalMotionApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -66,21 +68,32 @@ class MainActivity : FragmentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Column {
-                        /*ExoPlayerView(
-                                             modifier = Modifier.fillMaxSize(),
-                                             mediaUrl = stringResource(id = R.string.media_url_mp3)
-                                         )*/
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState())
+                        ) {
 
-                        FragmentContainer(
-                            modifier = Modifier.fillMaxWidth(),
+                            FragmentContainer(
+                                modifier = Modifier
+                                    .height(300.dp)
+                                    .fillMaxWidth(),
+                                fragmentManager = supportFragmentManager,
+                                commit = { add(it, PlayerFragment()) })
+
+
+                            repeat(30) {
+                                Text("Item $it", modifier = Modifier.padding(6.dp))
+                            }
+                            Spacer(modifier = Modifier.height(150.dp))
+                        }
+
+                        MiniPlayer(modifier = Modifier
+                            .height(150.dp)
+                            .align(Alignment.BottomEnd),
                             fragmentManager = supportFragmentManager,
                             commit = { add(it, PlayerFragment()) })
-
-                        //BrightCoveView(modifier = Modifier.fillMaxSize())
-
-                        LazyColumnDemo()
-
                     }
                 }
             }
@@ -101,18 +114,45 @@ class MainActivity : FragmentActivity() {
     }
 }
 
+@OptIn(ExperimentalMotionApi::class)
 @Composable
-fun LazyColumnDemo() {
-    LazyColumn {
-        // Add 10 items
-        items(10) { index ->
-            // Content of each item
-            Text(
-                text = "Item $index",
-                modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.bodyMedium,
-                color = Color.Black
-            )
-        }
+fun MotionPlayer(progress: Float) {
+    val context = LocalContext.current
+    val motionSceneContent = remember {
+        context.resources
+            .openRawResource(R.raw.motion_scene)
+            .readBytes()
+            .decodeToString()
+    }
+    MotionLayout(
+        motionScene = MotionScene(motionSceneContent),
+        progress = progress,
+        modifier = Modifier
+            .fillMaxSize(),
+        //debug = EnumSet.of(MotionLayoutDebugFlags.SHOW_ALL)
+    ) {
+        val properties = motionProperties(id = "my_text")
+
+        Image(
+            painter = painterResource(
+                id = R.drawable.ic_launcher_foreground
+            ),
+            contentDescription = "",
+            modifier = Modifier
+                .layoutId("my_image")
+        )
+        Divider(
+            color = Color.Gray,
+            thickness = 2.dp,
+            modifier = Modifier
+                .layoutId("my_divider")
+        )
+        Text(
+            text = "unit",
+            color = properties.value.color("textColor"),
+            modifier = Modifier
+                .layoutId("my_text")
+        )
     }
 }
 
@@ -188,6 +228,22 @@ fun ExoPlayerView(modifier: Modifier = Modifier, mediaUrl: String) {
             exoplayer.release()
             lifecycle.removeObserver(observer)
         }
+    }
+}
+
+@Composable
+fun MiniPlayer(
+    modifier: Modifier = Modifier,
+    fragmentManager: FragmentManager,
+    commit: FragmentTransaction.(containerId: Int) -> Unit
+) {
+    Row(
+        modifier = modifier
+            .padding(start = 8.dp, top = 20.dp)
+            .background(Color.Gray)
+    ) {
+        Text(text = "MOVIE")
+        FragmentContainer(fragmentManager = fragmentManager, commit = commit)
     }
 }
 

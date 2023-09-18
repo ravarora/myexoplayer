@@ -38,6 +38,7 @@ brightcove-exoplayer = { group = "com.brightcove.player", name = "exoplayer2", v
 brightcove-appcompat-plugin = { group = "com.brightcove.player", name = "android-appcompat-plugin", version.ref = "brightcove" }
 brightcove-cast-plugin = { group = "com.brightcove.player", name = "android-cast-plugin", version.ref = "brightcove" }
 support-v4 = { group = "com.android.support", name = "support-v4", version = "28.0.0" }
+androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version = "1.0.1" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }

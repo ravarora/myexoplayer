@@ -77,6 +77,7 @@ dependencies {
         exclude(group = "com.android.support", "support-annotations")
     }
     implementation(libs.support.v4)
+    implementation(libs.androidx.constraintlayout.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
