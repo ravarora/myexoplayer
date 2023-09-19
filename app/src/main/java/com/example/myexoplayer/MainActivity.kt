@@ -44,12 +44,6 @@ class MainActivity : ComponentActivity() {
             MyExoPlayerTheme {
                 // A surface container using the 'background' color from the theme
                 HomeScreen(modifier = Modifier.fillMaxSize())
-                /*ExoPlayerView(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(250.dp),
-                    mediaUrl = stringResource(id = R.string.media_url_mp3)
-                )*/
             }
         }
     }
@@ -123,11 +117,19 @@ fun HomeScreen(modifier: Modifier) {
         context.resources.openRawResource(R.raw.motion_scene).readBytes().decodeToString()
     }
     val scrollState = rememberScrollState()
-    MotionLayout(modifier = Modifier.fillMaxSize(), motionScene = MotionScene(content = motionScene)) {
+    MotionLayout(
+        modifier = Modifier
+            .fillMaxSize()
+            .layoutId("motionLayout1"),
+        motionScene = MotionScene(content = motionScene),
+        progress = (scrollState.value.toFloat()) / 1000f
+    ) {
         // scrollview
-        Column(modifier = Modifier
-            .verticalScroll(scrollState)
-            .layoutId("scrollView")) {
+        Column(
+            modifier = Modifier
+                .verticalScroll(scrollState)
+                .layoutId("scrollView")
+        ) {
             ExoPlayerView(
                 modifier = Modifier
                     .fillMaxWidth()
